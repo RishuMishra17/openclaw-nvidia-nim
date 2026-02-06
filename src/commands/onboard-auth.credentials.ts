@@ -114,7 +114,21 @@ export async function setVeniceApiKey(key: string, agentDir?: string) {
   });
 }
 
+export async function setNvidiaNimApiKey(key: string, agentDir?: string) {
+  // Write to resolved agent dir so gateway finds credentials on startup.
+  upsertAuthProfile({
+    profileId: "nvidia-nim:default",
+    credential: {
+      type: "api_key",
+      provider: "nvidia-nim",
+      key,
+    },
+    agentDir: resolveAuthAgentDir(agentDir),
+  });
+}
+
 export const ZAI_DEFAULT_MODEL_REF = "zai/glm-4.7";
+export const NVIDIA_NIM_DEFAULT_MODEL_REF = "nvidia-nim/moonshotai/kimi-k2-5";
 export const XIAOMI_DEFAULT_MODEL_REF = "xiaomi/mimo-v2-flash";
 export const OPENROUTER_DEFAULT_MODEL_REF = "openrouter/auto";
 export const VERCEL_AI_GATEWAY_DEFAULT_MODEL_REF = "vercel-ai-gateway/anthropic/claude-opus-4.5";

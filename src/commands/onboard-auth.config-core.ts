@@ -18,6 +18,7 @@ import {
 } from "../agents/venice-models.js";
 import {
   CLOUDFLARE_AI_GATEWAY_DEFAULT_MODEL_REF,
+  NVIDIA_NIM_DEFAULT_MODEL_REF,
   OPENROUTER_DEFAULT_MODEL_REF,
   VERCEL_AI_GATEWAY_DEFAULT_MODEL_REF,
   XIAOMI_DEFAULT_MODEL_REF,
@@ -25,11 +26,14 @@ import {
 } from "./onboard-auth.credentials.js";
 import {
   buildMoonshotModelDefinition,
+  buildNvidiaNimModelDefinition,
   KIMI_CODING_MODEL_REF,
   MOONSHOT_BASE_URL,
   MOONSHOT_CN_BASE_URL,
   MOONSHOT_DEFAULT_MODEL_ID,
   MOONSHOT_DEFAULT_MODEL_REF,
+  NVIDIA_NIM_BASE_URL,
+  NVIDIA_NIM_DEFAULT_MODEL_ID,
 } from "./onboard-auth.models.js";
 
 export function applyZaiConfig(cfg: OpenClawConfig): OpenClawConfig {
@@ -582,6 +586,79 @@ export function applyVeniceConfig(cfg: OpenClawConfig): OpenClawConfig {
               }
             : undefined),
           primary: VENICE_DEFAULT_MODEL_REF,
+        },
+      },
+    },
+  };
+}
+
+/**
+ * Apply NVIDIA NIM provider configuration without changing the default model.
+ * Registers the Kimi K2.5 model via NVIDIA NIM and sets up the provider.
+ */
+export function applyNvidiaNimProviderConfig(cfg: OpenClawConfig): OpenClawConfig {
+  const models = { ...cfg.agents?.defaults?.models };
+  models[NVIDIA_NIM_DEFAULT_MODEL_REF] = {
+    ...models[NVIDIA_NIM_DEFAULT_MODEL_REF],
+    alias: models[NVIDIA_NIM_DEFAULT_MODEL_REF]?.alias ?? "Kimi K2.5 (NIM)",
+  };
+
+  const providers = { ...cfg.models?.providers };
+  const existingProvider = providers["nvidia-nim"];
+  const existingModels = Array.isArray(existingProvider?.models) ? existingProvider.models : [];
+  const defaultModel = buildNvidiaNimModelDefinition();
+  const hasDefaultModel = existingModels.some((model) => model.id === NVIDIA_NIM_DEFAULT_MODEL_ID);
+  const mergedModels = hasDefaultModel ? existingModels : [...existingModels, defaultModel];
+  const { apiKey: existingApiKey, ...existingProviderRest } = (existingProvider ?? {}) as Record<
+    string,
+    unknown
+  > as { apiKey?: string };
+  const resolvedApiKey = typeof existingApiKey === "string" ? existingApiKey : undefined;
+  const normalizedApiKey = resolvedApiKey?.trim();
+  providers["nvidia-nim"] = {
+    ...existingProviderRest,
+    baseUrl: NVIDIA_NIM_BASE_URL,
+    api: "openai-completions",
+    ...(normalizedApiKey ? { apiKey: normalizedApiKey } : {}),
+    models: mergedModels.length > 0 ? mergedModels : [defaultModel],
+  };
+
+  return {
+    ...cfg,
+    agents: {
+      ...cfg.agents,
+      defaults: {
+        ...cfg.agents?.defaults,
+        models,
+      },
+    },
+    models: {
+      mode: cfg.models?.mode ?? "merge",
+      providers,
+    },
+  };
+}
+
+/**
+ * Apply NVIDIA NIM provider configuration AND set it as the default model.
+ * Use this when NVIDIA NIM is the primary provider choice during onboarding.
+ */
+export function applyNvidiaNimConfig(cfg: OpenClawConfig): OpenClawConfig {
+  const next = applyNvidiaNimProviderConfig(cfg);
+  const existingModel = next.agents?.defaults?.model;
+  return {
+    ...next,
+    agents: {
+      ...next.agents,
+      defaults: {
+        ...next.agents?.defaults,
+        model: {
+          ...(existingModel && "fallbacks" in (existingModel as Record<string, unknown>)
+            ? {
+                fallbacks: (existingModel as { fallbacks?: string[] }).fallbacks,
+              }
+            : undefined),
+          primary: NVIDIA_NIM_DEFAULT_MODEL_REF,
         },
       },
     },

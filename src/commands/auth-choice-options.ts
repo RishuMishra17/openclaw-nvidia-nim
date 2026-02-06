@@ -22,6 +22,7 @@ export type AuthChoiceGroupId =
   | "minimax"
   | "synthetic"
   | "venice"
+  | "nvidia-nim"
   | "qwen";
 
 export type AuthChoiceGroup = {
@@ -122,6 +123,12 @@ const AUTH_CHOICE_GROUP_DEFS: {
     choices: ["venice-api-key"],
   },
   {
+    value: "nvidia-nim",
+    label: "NVIDIA NIM",
+    hint: "Kimi K2.5 via NVIDIA (OpenAI-compatible)",
+    choices: ["nvidia-nim-api-key"],
+  },
+  {
     value: "cloudflare-ai-gateway",
     label: "Cloudflare AI Gateway",
     hint: "Account ID + Gateway ID + API key",
@@ -172,6 +179,11 @@ export function buildAuthChoiceOptions(params: {
     value: "venice-api-key",
     label: "Venice AI API key",
     hint: "Privacy-focused inference (uncensored models)",
+  });
+  options.push({
+    value: "nvidia-nim-api-key",
+    label: "NVIDIA NIM API key",
+    hint: "Kimi K2.5 via NVIDIA NIM (nvapi-...)",
   });
   options.push({
     value: "github-copilot",

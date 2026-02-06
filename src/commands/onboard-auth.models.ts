@@ -16,6 +16,12 @@ export const MOONSHOT_DEFAULT_MAX_TOKENS = 8192;
 export const KIMI_CODING_MODEL_ID = "k2p5";
 export const KIMI_CODING_MODEL_REF = `kimi-coding/${KIMI_CODING_MODEL_ID}`;
 
+export const NVIDIA_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1";
+export const NVIDIA_NIM_DEFAULT_MODEL_ID = "moonshotai/kimi-k2-5";
+export const NVIDIA_NIM_DEFAULT_MODEL_REF = `nvidia-nim/${NVIDIA_NIM_DEFAULT_MODEL_ID}`;
+export const NVIDIA_NIM_DEFAULT_CONTEXT_WINDOW = 131072;
+export const NVIDIA_NIM_DEFAULT_MAX_TOKENS = 8192;
+
 // Pricing: MiniMax doesn't publish public rates. Override in models.json for accurate costs.
 export const MINIMAX_API_COST = {
   input: 15,
@@ -36,6 +42,12 @@ export const MINIMAX_LM_STUDIO_COST = {
   cacheWrite: 0,
 };
 export const MOONSHOT_DEFAULT_COST = {
+  input: 0,
+  output: 0,
+  cacheRead: 0,
+  cacheWrite: 0,
+};
+export const NVIDIA_NIM_DEFAULT_COST = {
   input: 0,
   output: 0,
   cacheRead: 0,
@@ -90,5 +102,17 @@ export function buildMoonshotModelDefinition(): ModelDefinitionConfig {
     cost: MOONSHOT_DEFAULT_COST,
     contextWindow: MOONSHOT_DEFAULT_CONTEXT_WINDOW,
     maxTokens: MOONSHOT_DEFAULT_MAX_TOKENS,
+  };
+}
+
+export function buildNvidiaNimModelDefinition(): ModelDefinitionConfig {
+  return {
+    id: NVIDIA_NIM_DEFAULT_MODEL_ID,
+    name: "Kimi K2.5 (NVIDIA NIM)",
+    reasoning: false,
+    input: ["text", "image"],
+    cost: NVIDIA_NIM_DEFAULT_COST,
+    contextWindow: NVIDIA_NIM_DEFAULT_CONTEXT_WINDOW,
+    maxTokens: NVIDIA_NIM_DEFAULT_MAX_TOKENS,
   };
 }
