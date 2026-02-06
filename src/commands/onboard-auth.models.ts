@@ -17,7 +17,7 @@ export const KIMI_CODING_MODEL_ID = "k2p5";
 export const KIMI_CODING_MODEL_REF = `kimi-coding/${KIMI_CODING_MODEL_ID}`;
 
 export const NVIDIA_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1";
-export const NVIDIA_NIM_DEFAULT_MODEL_ID = "moonshotai/kimi-k2-5";
+export const NVIDIA_NIM_DEFAULT_MODEL_ID = "moonshotai/kimi-k2.5";
 export const NVIDIA_NIM_DEFAULT_MODEL_REF = `nvidia-nim/${NVIDIA_NIM_DEFAULT_MODEL_ID}`;
 export const NVIDIA_NIM_DEFAULT_CONTEXT_WINDOW = 131072;
 export const NVIDIA_NIM_DEFAULT_MAX_TOKENS = 8192;

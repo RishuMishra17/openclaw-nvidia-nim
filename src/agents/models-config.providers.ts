@@ -59,7 +59,7 @@ const MOONSHOT_DEFAULT_COST = {
 };
 
 const NVIDIA_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1";
-const NVIDIA_NIM_DEFAULT_MODEL_ID = "moonshotai/kimi-k2-5";
+const NVIDIA_NIM_DEFAULT_MODEL_ID = "moonshotai/kimi-k2.5";
 const NVIDIA_NIM_DEFAULT_CONTEXT_WINDOW = 131072;
 const NVIDIA_NIM_DEFAULT_MAX_TOKENS = 8192;
 const NVIDIA_NIM_DEFAULT_COST = {
